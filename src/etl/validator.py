@@ -1,6 +1,5 @@
 import pandas as pd
 
-# Store all validation failures
 failures = []
 
 
@@ -101,7 +100,6 @@ if __name__ == "__main__":
         if "year" in df.columns:
             check_year(df, name)
 
-    # Generate CSV report
     if failures:
 
         report = pd.DataFrame(failures)
