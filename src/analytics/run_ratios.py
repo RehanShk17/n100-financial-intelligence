@@ -7,6 +7,13 @@ from ratios import (
     calculate_roe,
     calculate_roce,
     calculate_roa,
+    calculate_debt_to_equity,
+    calculate_interest_coverage,
+    calculate_net_debt,
+    calculate_asset_turnover,
+    high_leverage_flag,
+    debt_free_label,
+    icr_warning_flag,
 )
 
 # Connect to database
@@ -85,6 +92,55 @@ df["return_on_assets_pct"] = df.apply(
     axis=1
 )
 
+# -----------------------------------
+# Day 9 Ratios
+# -----------------------------------
+
+df["debt_to_equity"] = df.apply(
+    lambda x: calculate_debt_to_equity(
+        x["borrowings"],
+        x["equity_capital"],
+        x["reserves"]
+    ),
+    axis=1
+)
+
+df["interest_coverage"] = df.apply(
+    lambda x: calculate_interest_coverage(
+        x["operating_profit"],
+        x["interest"]
+    ),
+    axis=1
+)
+
+df["net_debt"] = df.apply(
+    lambda x: calculate_net_debt(
+        x["borrowings"],
+        x["investments"]
+    ),
+    axis=1
+)
+
+df["asset_turnover"] = df.apply(
+    lambda x: calculate_asset_turnover(
+        x["sales"],
+        x["total_assets"]
+    ),
+    axis=1
+)
+
+df["high_leverage"] = df["debt_to_equity"].apply(
+    high_leverage_flag
+)
+
+df["debt_free"] = df["borrowings"].apply(
+    debt_free_label
+)
+
+df["icr_warning"] = df["interest_coverage"].apply(
+    icr_warning_flag
+)
+
 print("\n===== SAMPLE OUTPUT =====\n")
 
 print(
@@ -97,6 +153,13 @@ print(
             "return_on_equity_pct",
             "return_on_capital_pct",
             "return_on_assets_pct",
+            "debt_to_equity",
+            "interest_coverage",
+            "net_debt",
+            "asset_turnover",
+            "high_leverage",
+            "debt_free",
+            "icr_warning",
         ]
     ].head(10)
 )
