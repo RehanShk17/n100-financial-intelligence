@@ -68,15 +68,55 @@ def classify_capital_allocation(cfo, cfi, cff):
     return mapping.get(pattern, "Mixed")
 
 
+# -----------------------------------------
+# NEW FUNCTIONS FOR SPRINT REQUIREMENTS
+# -----------------------------------------
+
+def get_cfo_quality_label(cfo_quality_ratio):
+    """
+    CFO Quality Label
+    >1.0  -> High Quality
+    0.5-1 -> Moderate
+    <0.5  -> Accrual Risk
+    """
+
+    if cfo_quality_ratio is None:
+        return None
+
+    if cfo_quality_ratio > 1:
+        return "High Quality"
+
+    elif cfo_quality_ratio >= 0.5:
+        return "Moderate"
+
+    return "Accrual Risk"
+
+
+def get_sign(value):
+    """
+    Return '+' for positive/zero values
+    Return '-' for negative values
+    """
+
+    if value >= 0:
+        return "+"
+
+    return "-"
+
+
 if __name__ == "__main__":
 
     fcf = calculate_free_cash_flow(1000, -300)
 
     print("Free Cash Flow:", fcf)
 
+    ratio = calculate_cfo_quality_ratio(1000, 800)
+
+    print("CFO Quality Ratio:", ratio)
+
     print(
-        "CFO Quality:",
-        calculate_cfo_quality_ratio(1000, 800)
+        "CFO Quality Label:",
+        get_cfo_quality_label(ratio)
     )
 
     print(
@@ -96,4 +136,11 @@ if __name__ == "__main__":
             -300,
             -200
         )
+    )
+
+    print(
+        "Signs:",
+        get_sign(1000),
+        get_sign(-300),
+        get_sign(-200)
     )

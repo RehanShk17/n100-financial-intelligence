@@ -6,7 +6,9 @@ from cashflow_kpis import (
     calculate_cfo_quality_ratio,
     calculate_capex_intensity,
     calculate_fcf_conversion,
-    classify_capital_allocation
+    classify_capital_allocation,
+    get_cfo_quality_label,
+    get_sign
 )
 
 # ----------------------------------------
@@ -56,6 +58,10 @@ df["cfo_quality_ratio"] = df.apply(
     axis=1
 )
 
+df["cfo_quality_label"] = df["cfo_quality_ratio"].apply(
+    get_cfo_quality_label
+)
+
 df["capex_intensity"] = df.apply(
     lambda x: calculate_capex_intensity(
         x["investing_activity"],
@@ -82,6 +88,18 @@ df["capital_allocation"] = df.apply(
 )
 
 # ----------------------------------------
+# Sprint Required Columns
+# ----------------------------------------
+
+df["cfo_sign"] = df["operating_activity"].apply(get_sign)
+
+df["cfi_sign"] = df["investing_activity"].apply(get_sign)
+
+df["cff_sign"] = df["financing_activity"].apply(get_sign)
+
+df["pattern_label"] = df["capital_allocation"]
+
+# ----------------------------------------
 # Display Sample
 # ----------------------------------------
 
@@ -94,26 +112,29 @@ print(
             "year",
             "free_cash_flow",
             "cfo_quality_ratio",
+            "cfo_quality_label",
             "capex_intensity",
             "fcf_conversion",
-            "capital_allocation"
+            "cfo_sign",
+            "cfi_sign",
+            "cff_sign",
+            "pattern_label"
         ]
     ].head(10)
 )
 
 # ----------------------------------------
-# Export CSV
+# Export CSV (Sprint Format)
 # ----------------------------------------
 
 df[
     [
         "company_id",
         "year",
-        "free_cash_flow",
-        "cfo_quality_ratio",
-        "capex_intensity",
-        "fcf_conversion",
-        "capital_allocation"
+        "cfo_sign",
+        "cfi_sign",
+        "cff_sign",
+        "pattern_label"
     ]
 ].to_csv(
     "output/capital_allocation.csv",
